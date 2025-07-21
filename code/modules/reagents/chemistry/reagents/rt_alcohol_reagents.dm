@@ -518,7 +518,7 @@
 
 // Special Drugs
 /datum/reagent/consumable/ethanol/murkwine // not Toilet wine
-	name = "mürkwine"
+	name = "Mürkwine"
 	boozepwr = 50  // bubba's best
 	taste_description = "hints of questionable choices--a bouqet of murkwater and pure ethanol"
 	color = "#4b1e00"
@@ -533,7 +533,7 @@
 	M.remove_status_effect(/datum/status_effect/buff/murkwine)
 
 /datum/reagent/consumable/ethanol/nocshine // wait, no, NOCSHINE
-	name = "noc's shine"
+	name = "Noc's Shine"
 	boozepwr = 70  // YEEEEEHAAAWWWWWW
 	taste_description = "what might be my throat melting and nose hair burning"
 	color = "#d8fbfd63"
@@ -551,3 +551,31 @@
 
 /datum/reagent/consumable/ethanol/nocshine/on_mob_end_metabolize(mob/living/M)
 	M.remove_status_effect(/datum/status_effect/buff/nocshine)
+
+/datum/reagent/consumable/ethanol/luxwine // oh no.
+	name = "Luxintenebre" // lux left w/ sugar in a darkened place for quite some time... U could say... Light in Darkness.....
+	description = "A fermented form of vitae, highly alcoholic, and with a particularly grim taste. Often sought out by the daring, foolhardy, and heretical..."
+	boozepwr = 80 // THE END OF THE FUCKING WORLD.  
+	taste_description = "a green numbness, then a burning vigor in the heart" // heartburn (healing)
+	color = "#86cca3"
+	quality = DRINK_VERYGOOD // good stuff!
+
+/datum/reagent/consumable/ethanol/luxwine/on_mob_life(mob/living/carbon/M) // stolen healthpot code. i am shameless.
+	if(volume > 0.99) // i have no clue if this works.
+		M.adjustBruteLoss(-1*REM, 0)
+		M.adjustFireLoss(-1*REM, 0)
+	..()
+
+/datum/reagent/consumable/ethanol/whipwine // dont ask
+	name = "Magickal Whip Wine" 
+	description = "A recipe recently floated into the Peaks. Magickal Whip Wine is said to increase one's potence and stamina sevenfold."
+	boozepwr = 10 // it's a whip. it's an actual whip.
+	taste_description = "leather, bitter herbs, and regret" // what did you expect
+	color = "#3a1d18"
+
+/datum/reagent/consumable/ethanol/komuchisake // if you put this outside the lich dungeon i'll kill you
+	name = "Divine Snake Wine" 
+	description = "The True Form of the Whipwine. The Magickal Snake Wine was an exclusively produced medicinal wine from over three centures ago in the Kazengun Shogunate..."
+	boozepwr = 60 // ancient lichebrau...
+	taste_description = "bitterness, pain, iron, and ancient mistakes" // what did you expect [2]
+	color = "#553837"

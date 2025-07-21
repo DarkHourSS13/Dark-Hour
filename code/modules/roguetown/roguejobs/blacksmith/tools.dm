@@ -8,7 +8,7 @@
 	icon = 'icons/roguetown/weapons/tools.dmi'
 	sharpness = IS_BLUNT
 	//dropshrink = 0.8
-	wlength = 10
+	wlength = WLENGTH_SHORT
 	slot_flags = ITEM_SLOT_HIP
 	w_class = WEIGHT_CLASS_NORMAL
 	associated_skill = /datum/skill/combat/maces
@@ -60,6 +60,8 @@
 			return
 		else
 			user.visible_message(span_warning("[user] fumbles trying to repair [attacked_prosthetic]!"))
+			if(do_after(user, CLICK_CD_MELEE, target = attacked_object))
+				attack_obj(attacked_object, user)
 			return
 
 	if(isitem(attacked_object) && !user.cmode)
@@ -105,7 +107,8 @@
 			return
 		else
 			user.visible_message(span_warning("[user] fumbles trying to repair [attacked_item]!"))
-			attacked_item.obj_integrity = max(0, attacked_item.obj_integrity - (10 - repair_percent))
+			if(do_after(user, CLICK_CD_MELEE, target = attacked_object))
+				attack_obj(attacked_object, user)
 			return
 
 	if(isstructure(attacked_object) && !user.cmode)
@@ -121,6 +124,8 @@
 		blacksmith.mind.add_sleep_experience(attacked_structure.hammer_repair, exp_gained) //We gain as much exp as we fix
 		playsound(src,'sound/items/bsmithfail.ogg', 100, FALSE)
 		user.visible_message(span_info("[user] repairs [attacked_structure]!"))
+		if(attacked_object.obj_integrity <= attacked_object.max_integrity && do_after(user, CLICK_CD_MELEE, target = attacked_object))
+			attack_obj(attacked_object, user)
 		return
 
 	. = ..()
@@ -262,7 +267,7 @@
 	icon = 'icons/roguetown/weapons/tools.dmi'
 	sharpness = IS_BLUNT
 	//dropshrink = 0.8
-	wlength = 10
+	wlength = WLENGTH_SHORT
 	slot_flags = ITEM_SLOT_HIP
 	tool_behaviour = TOOL_IMPROVISED_HEMOSTAT
 	associated_skill = null

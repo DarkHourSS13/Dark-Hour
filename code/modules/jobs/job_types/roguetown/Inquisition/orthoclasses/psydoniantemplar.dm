@@ -5,7 +5,7 @@
 	allowed_races = RACES_ALL_KINDS
 	outfit = /datum/outfit/job/roguetown/psydoniantemplar
 	category_tags = list(CTAG_INQUISITION)
-	cmode_music = 'sound/music/templarofpsydonia.ogg'
+	cmode_music = 'sound/music/combat.ogg'
 
 /datum/outfit/job/roguetown/psydoniantemplar
 	job_bitflag = BITFLAG_CHURCH
@@ -63,6 +63,7 @@
 	switch(weapon_choice)
 		if("Sword")
 			H.put_in_hands(new /obj/item/rogueweapon/sword/long/psysword(H), TRUE)
+			H.put_in_hands(new /obj/item/rogueweapon/scabbard(H), TRUE)
 			H.adjust_skillrank_up_to(/datum/skill/combat/swords, 4, TRUE)
 		if("Axe")
 			H.put_in_hands(new /obj/item/rogueweapon/stoneaxe/battle/psyaxe(H), TRUE)

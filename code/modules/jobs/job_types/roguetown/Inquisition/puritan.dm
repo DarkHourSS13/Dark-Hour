@@ -10,7 +10,7 @@
 	allowed_patrons = list(/datum/patron/old_god) //You MUST have a Psydonite character to start. Just so people don't get japed into Oops Suddenly Psydon!
 	tutorial = "You have been sent here as a diplomatic envoy from the Sovereignty of Otava: a silver-tipped olive branch, unmatched in aptitude and unshakable in faith. Though you might be ostracized due to your Psydonic beliefs, neither the Church nor Crown can deny your value, whenever matters of inhumenity arise to threaten this fief."
 	whitelist_req = TRUE
-	cmode_music = 'sound/music/inquisitorcombat.ogg'
+	cmode_music = 'sound/music/combat.ogg'
 	selection_color = JCOLOR_INQUISITION
 
 	outfit = /datum/outfit/job/roguetown/puritan
@@ -88,7 +88,8 @@
 	head = /obj/item/clothing/head/roguetown/inqhat
 	gloves = /obj/item/clothing/gloves/roguetown/otavan/inqgloves
 	wrists = /obj/item/clothing/neck/roguetown/psicross/silver
-	beltl = /obj/item/rogueweapon/sword/rapier
+	beltl = /obj/item/rogueweapon/scabbard/sword
+	l_hand = /obj/item/rogueweapon/sword/rapier
 	armor = /obj/item/clothing/suit/roguetown/armor/plate/scale/inqcoat
 	backpack_contents = list(
 		/obj/item/storage/keyring/puritan = 1,
@@ -96,6 +97,7 @@
 		/obj/item/rogueweapon/huntingknife/idagger/silver/psydagger,
 		/obj/item/grapplinghook = 1,
 		/obj/item/storage/belt/rogue/pouch/coins/rich = 1,
+		/obj/item/rogueweapon/scabbard/sheath = 1
 		)
 
 
@@ -153,13 +155,15 @@
 	beltr = /obj/item/storage/belt/rogue/pouch/coins/rich
 	head = /obj/item/clothing/head/roguetown/helmet/heavy/psydonhelm
 	gloves = /obj/item/clothing/gloves/roguetown/otavan/inqgloves
-	beltl = /obj/item/rogueweapon/sword/long/psysword
+	beltl = /obj/item/rogueweapon/scabbard/sword
+	l_hand = /obj/item/rogueweapon/sword/long/psysword
 	backpack_contents = list(
 		/obj/item/storage/keyring/puritan = 1,
 		/obj/item/lockpickring/mundane = 1,
 		/obj/item/rogueweapon/huntingknife/idagger/silver/psydagger,
 		/obj/item/grapplinghook = 1,
 		/obj/item/storage/belt/rogue/pouch/coins/rich = 1,
+		/obj/item/rogueweapon/scabbard/sheath = 1
 		)
 
 /obj/item/clothing/gloves/roguetown/chain/blk

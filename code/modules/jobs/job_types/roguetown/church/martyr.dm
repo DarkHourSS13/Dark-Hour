@@ -10,7 +10,7 @@
 	var/next_activation = 0
 	var/end_activation = 0
 	var/ignite_chance = 2
-	var/traits_applied = list(TRAIT_NOPAIN, TRAIT_NOPAINSTUN, TRAIT_NOMOOD, TRAIT_NOHUNGER, TRAIT_NOBREATH, TRAIT_BLOODLOSS_IMMUNE, TRAIT_LONGSTRIDER, TRAIT_STRONGBITE, TRAIT_STRENGTH_UNCAPPED)
+	var/traits_applied = list(TRAIT_NOPAIN, TRAIT_NOPAINSTUN, TRAIT_NOMOOD, TRAIT_NOHUNGER, TRAIT_NOBREATH, TRAIT_BLOODLOSS_IMMUNE, TRAIT_LONGSTRIDER, TRAIT_STRONGBITE, TRAIT_STRENGTH_UNCAPPED, TRAIT_GRABIMMUNE)
 	var/stat_bonus_martyr = 3
 	var/mob/living/current_holder
 	var/is_active = FALSE
@@ -298,6 +298,9 @@
 		REMOVE_TRAIT(parent, TRAIT_NODROP, TRAIT_GENERIC)	//The weapon can be moved by the Priest again (or used, I suppose)
 	is_active = FALSE
 	I.damtype = BRUTE
+	I.possible_item_intents = list(/datum/intent/sword/cut, /datum/intent/sword/thrust, /datum/intent/sword/strike)
+	I.gripped_intents = list(/datum/intent/sword/cut, /datum/intent/sword/thrust, /datum/intent/sword/strike, /datum/intent/sword/chop)
+	current_holder.update_a_intents()
 	I.force = initial(I.force)
 	I.force_wielded = initial(I.force_wielded)
 	I.max_integrity = initial(I.max_integrity)
@@ -360,6 +363,9 @@
 		flash_lightning(user)
 		var/obj/item/I = parent
 		I.damtype = BURN	//Changes weapon damage type to fire
+		I.possible_item_intents = list(/datum/intent/sword/cut/martyr, /datum/intent/sword/thrust/martyr, /datum/intent/sword/strike/martyr)
+		I.gripped_intents = list(/datum/intent/sword/cut/martyr, /datum/intent/sword/thrust/martyr, /datum/intent/sword/strike/martyr, /datum/intent/sword/chop/martyr)
+		user.update_a_intents()
 		I.slot_flags = null	//Can't sheathe a burning sword
 
 		ADD_TRAIT(parent, TRAIT_NODROP, TRAIT_GENERIC)	//You're committed, now.
@@ -395,13 +401,13 @@
 			switch(status_flag)
 				if(STATE_MARTYR)
 					SEND_SOUND(H, sound(null))
-					H.cmode_music = 'sound/music/combat_martyr.ogg'
+					H.cmode_music = 'sound/music/cmode/combat.ogg
 					to_chat(H, span_warning("I can feel my muscles nearly burst from power! I can jump great heights!"))
 					ADD_TRAIT(H, TRAIT_ZJUMP, TRAIT_GENERIC)
 					ADD_TRAIT(H, TRAIT_NOFALLDAMAGE2, TRAIT_GENERIC)
 				if(STATE_MARTYRULT)
 					SEND_SOUND(H, sound(null))
-					H.cmode_music = 'sound/music/combat_martyrult.ogg'
+					H.cmode_music = 'sound/music/cmode/combat.ogg
 					to_chat(H, span_warning("I can jump great heights!"))
 					ADD_TRAIT(H, TRAIT_ZJUMP, TRAIT_GENERIC)
 					ADD_TRAIT(H, TRAIT_NOFALLDAMAGE2, TRAIT_GENERIC)
@@ -436,7 +442,7 @@
 	
 	give_bank_account = TRUE
 
-	cmode_music = 'sound/music/combat_martyrsafe.ogg'
+	cmode_music = 'sound/music/combat.ogg'
 
 	//No undeath-adjacent virtues for a role that can sacrifice itself. The Ten like their sacrifices 'pure'. (I actually didn't want to code returning those virtue traits post-sword use)
 	//They get those traits during sword activation, anyway. 
@@ -452,6 +458,7 @@
 	belt = /obj/item/storage/belt/rogue/leather/plaquegold
 	beltr = /obj/item/storage/keyring/priest
 	beltl = /obj/item/storage/belt/rogue/pouch/coins/rich
+	r_hand = /obj/item/rogueweapon/scabbard/sword
 	backr = /obj/item/storage/backpack/rogue/satchel
 	gloves = /obj/item/clothing/gloves/roguetown/chain
 	wrists = /obj/item/clothing/wrists/roguetown/bracers
@@ -461,7 +468,10 @@
 	pants = /obj/item/clothing/under/roguetown/platelegs/holysee
 	cloak = /obj/item/clothing/cloak/holysee
 	head = /obj/item/clothing/head/roguetown/helmet/heavy/holysee
-	backpack_contents = list(/obj/item/rogueweapon/huntingknife/idagger/silver = 1)
+	backpack_contents = list(
+		/obj/item/rogueweapon/huntingknife/idagger/silver = 1,
+		/obj/item/rogueweapon/scabbard/sheath = 1
+		)
 
 	//No, they don't get any miracles. Their miracle is being able to use their weapon at all.
 	H.adjust_skillrank(/datum/skill/combat/swords, 4, TRUE)
@@ -477,6 +487,7 @@
 	H.adjust_skillrank(/datum/skill/craft/cooking, 3, TRUE)
 	H.adjust_skillrank(/datum/skill/misc/swimming, 1, TRUE)
 	H.adjust_skillrank(/datum/skill/misc/sneaking, 1, TRUE)
+	H.grant_language(/datum/language/grenzelhoftian)
 	ADD_TRAIT(H, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
 	ADD_TRAIT(H, TRAIT_STEELHEARTED, TRAIT_GENERIC)
 	ADD_TRAIT(H, TRAIT_EMPATH, TRAIT_GENERIC)
@@ -519,9 +530,23 @@
 	thrown_bclass = BCLASS_CUT
 	dropshrink = 1
 	smeltresult = /obj/item/ingot/gold
-	is_silver = FALSE
+	is_silver = TRUE
 	toggle_state = null
 	is_important = TRUE
+
+/datum/intent/sword/cut/martyr
+		item_d_type = "fire"
+		blade_class = BCLASS_CUT
+/datum/intent/sword/thrust/martyr
+		item_d_type = "fire"
+		blade_class = BCLASS_PICK // so our armor-piercing attacks in ult mode can do crits(against most armors, not having crit)
+/datum/intent/sword/strike/martyr
+		item_d_type = "fire"
+		blade_class = BCLASS_SMASH
+/datum/intent/sword/chop/martyr
+		item_d_type = "fire"
+		blade_class = BCLASS_CHOP
+
 
 /obj/item/rogueweapon/sword/long/martyr/Initialize()
 	AddComponent(/datum/component/martyrweapon)
@@ -617,6 +642,7 @@
 	desc = "Branded by the Holy See, these helms are worn by it's chosen warriors. A bastion of hope in the dark nite."
 	icon = 'icons/roguetown/clothing/special/martyr.dmi'
 	mob_overlay_icon = 'icons/roguetown/clothing/special/onmob/martyrbascinet.dmi'
+	bloody_icon = 'icons/effects/blood64.dmi'
 	adjustable = CAN_CADJUST
 	emote_environment = 3
 	flags_inv = HIDEEARS|HIDEFACE|HIDEHAIR|HIDESNOUT

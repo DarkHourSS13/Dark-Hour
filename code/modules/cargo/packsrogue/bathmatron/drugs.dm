@@ -53,3 +53,9 @@
 	name = "Nocshine"
 	cost = 40
 	contains = list(/obj/item/reagent_containers/glass/bottle/rogue/beer/nocshine)
+
+/datum/supply_pack/rogue/drugs/whipwine
+	name = "Magickal Whip-Wine"
+	cost = 30
+	contains = list(/obj/item/reagent_containers/glass/bottle/rogue/beer/whipwine)
+	

@@ -8,7 +8,7 @@
 	category_tags = list(CTAG_WRETCH)
 	traits_applied = list(TRAIT_STEELHEARTED, TRAIT_OUTLANDER, TRAIT_OUTLAW, TRAIT_HERESIARCH)
 	
-	cmode_music = 'sound/music/combat_bandit.ogg'
+	cmode_music = 'sound/music/cmode/antag/combat_thewall.ogg' // same as new hedgeknight music
 	classes = list("Disgraced" = "You were once a venerated and revered knight - now, a traitor who abandoned your liege. You lyve the lyfe of an outlaw, shunned and looked down upon by society.", 
 	"Abandoned Post" = "You had your post. You had your duty. Dissatisfied, lacking in morale, or simply thinking yourself better than it. - You decided to walk. Now it follows you everywhere you go.")
 
@@ -54,7 +54,8 @@
 				"Longsword + Shield", 
 				"Lucerne",
 				"Battle Axe",
-				"Lance + Kite Shield"
+				"Lance + Kite Shield",
+				"Samshir",
 			)
 			var/weapon_choice = input("Choose your weapon.", "TAKE UP ARMS") as anything in weapons
 			H.set_blindness(0)
@@ -63,7 +64,8 @@
 					r_hand = /obj/item/rogueweapon/estoc
 					backr = /obj/item/gwstrap
 				if("Longsword + Shield")
-					beltr = /obj/item/rogueweapon/sword/long
+					beltr = /obj/item/rogueweapon/scabbard/sword
+					r_hand = /obj/item/rogueweapon/sword/long
 					backr = /obj/item/rogueweapon/shield/tower/metal
 				if("Mace + Shield")
 					beltr = /obj/item/rogueweapon/mace/steel
@@ -79,6 +81,8 @@
 				if("Lance + Kite Shield")
 					r_hand = /obj/item/rogueweapon/spear/lance
 					backr = /obj/item/rogueweapon/shield/tower/metal
+				if("Samshir")
+					r_hand = /obj/item/rogueweapon/sword/sabre/shamshir
 			var/helmets = list(
 				"Pigface Bascinet" 	= /obj/item/clothing/head/roguetown/helmet/bascinet/pigface,
 				"Guard Helmet"		= /obj/item/clothing/head/roguetown/helmet/heavy/guard,
@@ -90,6 +94,7 @@
 				"Hounskull Bascinet" 		= /obj/item/clothing/head/roguetown/helmet/bascinet/pigface/hounskull,
 				"Etruscan Bascinet" 		= /obj/item/clothing/head/roguetown/helmet/bascinet/etruscan,
 				"Slitted Kettle"		= /obj/item/clothing/head/roguetown/helmet/heavy/knight/skettle,
+				"Kulah Khud"	= /obj/item/clothing/head/roguetown/helmet/sallet/raneshen,
 				"None"
 			)
 			var/helmchoice = input("Choose your Helm.", "TAKE UP HELMS") as anything in helmets
@@ -101,6 +106,7 @@
 				"Coat of Plates"	= /obj/item/clothing/suit/roguetown/armor/brigandine/coatplates,
 				"Steel Cuirass"		= /obj/item/clothing/suit/roguetown/armor/plate/half,				
 				"Fluted Cuirass"	= /obj/item/clothing/suit/roguetown/armor/plate/half/fluted,
+				"Scalemail"		= /obj/item/clothing/suit/roguetown/armor/plate/scale,
 			)
 			var/armorchoice = input("Choose your armor.", "TAKE UP ARMOR") as anything in armors
 			armor = armors[armorchoice]
@@ -120,6 +126,7 @@
 				/obj/item/rogueweapon/huntingknife/idagger/steel/special = 1,
 				/obj/item/flashlight/flare/torch/lantern/prelit = 1,
 				/obj/item/rope/chain = 1,
+				/obj/item/rogueweapon/scabbard/sheath = 1
 				)
 
 
@@ -138,7 +145,8 @@
 					beltr = /obj/item/rogueweapon/mace/warhammer
 					backl = /obj/item/rogueweapon/shield/iron
 				if("Sabre & Shield")
-					beltr = /obj/item/rogueweapon/sword/sabre
+					beltr = /obj/item/rogueweapon/scabbard/sword
+					r_hand = /obj/item/rogueweapon/sword/sabre
 					backl = /obj/item/rogueweapon/shield/wood
 				if("Axe & Shield")
 					beltr = /obj/item/rogueweapon/stoneaxe/woodcut/steel
@@ -191,7 +199,7 @@
 			belt = /obj/item/storage/belt/rogue/leather
 			backr = /obj/item/storage/backpack/rogue/satchel
 
-			backpack_contents = list(/obj/item/natural/cloth = 1, /obj/item/rogueweapon/huntingknife/idagger/steel/special = 1, /obj/item/rope/chain = 1, /obj/item/storage/belt/rogue/pouch/coins/poor = 1, /obj/item/flashlight/flare/torch/lantern/prelit = 1,)
+			backpack_contents = list(/obj/item/natural/cloth = 1, /obj/item/rogueweapon/huntingknife/idagger/steel/special = 1, /obj/item/rope/chain = 1, /obj/item/storage/belt/rogue/pouch/coins/poor = 1, /obj/item/flashlight/flare/torch/lantern/prelit = 1, /obj/item/rogueweapon/scabbard/sheath = 1)
 			var/helmets = list(
 			"Simple Helmet" 	= /obj/item/clothing/head/roguetown/helmet,
 			"Kettle Helmet" 	= /obj/item/clothing/head/roguetown/helmet/kettle,

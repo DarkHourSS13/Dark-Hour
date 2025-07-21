@@ -397,7 +397,6 @@
 //				to_chat(src, span_notice("I pull [AM] from [AM.pulledby]'s grip!"))
 //			log_combat(AM, AM.pulledby, "pulled from", src)
 //			AM.pulledby.stop_pulling() //an object can't be pulled by two mobs at once.
-
 	if(AM != src)
 		pulling = AM
 		AM.pulledby = src
@@ -412,6 +411,14 @@
 			M.LAssailant = usr
 
 		M.update_damage_hud()
+
+		if(HAS_TRAIT(M, TRAIT_GRABIMMUNE) && M.stat == CONSCIOUS) // Grab immunity check
+			if(M.cmode)
+				M.visible_message(span_warning("[M] breaks from [src]'s grip effortlessly!"), \
+						span_warning("I breaks from [src]'s grab effortlesly!"))
+				log_combat(src, M, "tried grabbing", addition="passive grab")
+				stop_pulling()
+				return
 
 		// Makes it so people who recently broke out of grabs cannot be grabbed again
 		if(TIMER_COOLDOWN_RUNNING(M, "broke_free") && M.stat == CONSCIOUS)
@@ -1007,10 +1014,18 @@
 
 	SEND_SIGNAL(src, COMSIG_LIVING_RESIST, src)
 	//resisting grabs (as if it helps anyone...)
-	if(!restrained(ignore_grab = 1) && pulledby)
-		log_combat(src, pulledby, "resisted grab")
-		resist_grab()
-		return
+	if(pulledby)
+		var/mob/living/P
+		if(isliving(pulledby))
+			P = pulledby
+		if(!restrained(ignore_grab = 1))
+			log_combat(src, pulledby, "resisted grab")
+			resist_grab()
+			return
+		else if(P.compliance) // we ARE handcuffed apart from the grab, but grabber has Compliance Mode on
+			log_combat(src, pulledby, "resisted grab (is restrained, compliance mode bypass)") // if you try baiting prisoners with this, I'll know.
+			resist_grab() // resisting out of his grab (100% success) takes priority here
+			return
 
 	//unbuckling yourself
 	if(buckled && last_special <= world.time)
@@ -1055,6 +1070,26 @@
 /mob/living/proc/end_submit()
 	surrendering = 0
 	update_mobility()
+
+/mob/living/proc/toggle_compliance()
+	set name = "Toggle Compliance"
+	set category = "IC"
+	set hidden = 1
+
+	var/notifyme = TRUE
+	if(client && client.prefs)
+		notifyme = client.prefs.compliance_notifs
+
+	if(has_status_effect(/datum/status_effect/compliance))
+		src.compliance = 0
+		remove_status_effect(/datum/status_effect/compliance)
+		if(notifyme)
+			to_chat(src, span_info("I will struggle against grabs as usual."))
+	else
+		src.compliance = 1
+		apply_status_effect(/datum/status_effect/compliance)
+		if(notifyme)
+			to_chat(src, span_info("I will allow all grabs and resistance attempts by others."))
 
 
 /mob/proc/stop_attack(message = FALSE)
@@ -1111,6 +1146,9 @@
 	resist_chance += (STACON - (agg_grab ? L.STASTR : L.STAEND)) * 5
 	resist_chance *= combat_modifier
 	resist_chance = clamp(resist_chance, 5, 95)
+
+	if(L.compliance)
+		resist_chance = 100
 
 	if(moving_resist && client) //we resisted by trying to move
 		client.move_delay = world.time + 20
@@ -1210,7 +1248,7 @@
 		if(L.cmode && L.mobility_flags & MOBILITY_STAND && !L.restrained())
 			to_chat(src, span_warning("I can't take \the [what] off, they are too tense!"))
 			return
-		if(L.surrendering)
+		if(L.compliance || L.surrendering)
 			surrender_mod = 0.5
 
 	if(!who.Adjacent(src))
@@ -1265,7 +1303,7 @@
 			if(L.cmode && L.mobility_flags & MOBILITY_STAND)
 				to_chat(src, span_warning("I can't put \the [what] on them, they are too tense!"))
 				return
-			if(L.surrendering)
+			if(L.compliance || L.surrendering)
 				surrender_mod = 0.5
 
 		who.visible_message(span_notice("[src] tries to put [what] on [who]."), \

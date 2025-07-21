@@ -29,3 +29,7 @@
 #define COMSIG_CARBON_PRAY "carbon_prayed"
 ///Prevents the carbon's patron from hearing this prayer due to cancelation.
 #define CARBON_PRAY_CANCEL (1<<0)
+
+/// Called from the base of '/obj/item/bodypart/proc/drop_limb(special)' ()
+#define COMSIG_MOB_DISMEMBER "mob_drop_limb"
+	#define COMPONENT_CANCEL_DISMEMBER (1<<0) //cancel the drop limb

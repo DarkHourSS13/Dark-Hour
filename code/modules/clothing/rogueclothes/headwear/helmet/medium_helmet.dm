@@ -228,7 +228,7 @@
 
 	detail_tag = "_detail"
 	color = "#FFFFFF"
-	detail_color = "#c7732f"
+	detail_color = "#e08828"
 
 /obj/item/clothing/head/roguetown/helmet/otavan/update_icon()
 	cut_overlays()

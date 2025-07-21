@@ -1122,6 +1122,43 @@
 	if(filter_data && filter_data[name])
 		return filters[filter_data.Find(name)]
 
+/** Update a filter's parameter and animate this change. If the filter doesn't exist we won't do anything.
+ * Basically a [datum/proc/modify_filter] call but with animations. Unmodified filter parameters are kept.
+ *
+ * Arguments:
+ * * name - Filter name
+ * * new_params - New parameters of the filter
+ * * time - time arg of the BYOND animate() proc.
+ * * easing - easing arg of the BYOND animate() proc.
+ * * loop - loop arg of the BYOND animate() proc.
+ */
+/atom/movable/proc/transition_filter(name, list/new_params, time, easing, loop)
+	var/filter = get_filter(name)
+	if(!filter)
+		return
+	// This can get injected by the filter procs, we want to support them so bye byeeeee
+	new_params -= "type"
+	animate(filter, new_params, time = time, easing = easing, loop = loop)
+	modify_filter(name, new_params)
+
+/** Update a filter's parameter to the new one. If the filter doesn't exist we won't do anything.
+ *
+ * Arguments:
+ * * name - Filter name
+ * * new_params - New parameters of the filter
+ * * overwrite - TRUE means we replace the parameter list completely. FALSE means we only replace the things on new_params.
+ */
+/atom/movable/proc/modify_filter(name, list/new_params, overwrite = FALSE)
+	var/filter = get_filter(name)
+	if(!filter)
+		return
+	if(overwrite)
+		filter_data[name] = new_params
+	else
+		for(var/thing in new_params)
+			filter_data[name][thing] = new_params[thing]
+	update_filters()
+
 /atom/proc/intercept_zImpact(atom/movable/AM, levels = 1)
 	. |= SEND_SIGNAL(src, COMSIG_ATOM_INTERCEPT_Z_FALL, AM, levels)
 
@@ -1173,3 +1210,14 @@
 /atom/proc/InitializeAIController()
 	if(ai_controller)
 		ai_controller = new ai_controller(src)
+
+///Returns a list of all locations (except the area) the movable is within.
+/proc/get_nested_locs(atom/movable/atom_on_location, include_turf = FALSE)
+	. = list()
+	var/atom/location = atom_on_location.loc
+	var/turf/our_turf = get_turf(atom_on_location)
+	while(location && location != our_turf)
+		. += location
+		location = location.loc
+	if(our_turf && include_turf) //At this point, only the turf is left, provided it exists.
+		. += our_turf

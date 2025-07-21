@@ -95,8 +95,11 @@
 		return 0 // going with the flow
 	if(swimmer.buckled)
 		return 0
+	var/abyssor_swim_bonus = HAS_TRAIT(swimmer, TRAIT_ABYSSOR_SWIM) ? 5 : 0
 	var/swimming_skill_level = swimmer.get_skill_level(/datum/skill/misc/swimming) 
-	. = max(BASE_STAM_DRAIN - (swimming_skill_level * STAM_PER_LEVEL), MIN_STAM_DRAIN)
+	. = max(BASE_STAM_DRAIN - (swimming_skill_level * STAM_PER_LEVEL) - abyssor_swim_bonus, MIN_STAM_DRAIN)
+	if(swimmer.mind)
+		swimmer.mind.add_sleep_experience(/datum/skill/misc/swimming, swimmer.STAINT * 0.5)
 //	. += (swimmer.checkwornweight()*2)
 	if(!swimmer.check_armor_skill())
 		. += UNSKILLED_ARMOR_PENALTY

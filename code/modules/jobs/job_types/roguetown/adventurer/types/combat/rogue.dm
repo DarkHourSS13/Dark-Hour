@@ -33,7 +33,12 @@
 			head = /obj/item/clothing/head/roguetown/fedora
 			beltl = /obj/item/flashlight/flare/torch/lantern
 			wrists = /obj/item/clothing/wrists/roguetown/bracers/leather
-			backpack_contents = list(/obj/item/lockpick = 1, /obj/item/rogueweapon/huntingknife = 1, /obj/item/recipe_book/survival = 1)
+			backpack_contents = list(
+				/obj/item/lockpick = 1, 
+				/obj/item/rogueweapon/huntingknife = 1, 
+				/obj/item/recipe_book/survival = 1,
+				/obj/item/rogueweapon/scabbard/sheath = 1
+				)
 			H.adjust_skillrank(/datum/skill/misc/tracking, 3, TRUE)
 			H.adjust_skillrank(/datum/skill/combat/swords, 2, TRUE)
 			H.adjust_skillrank(/datum/skill/misc/swimming, 3, TRUE)
@@ -47,7 +52,7 @@
 			H.adjust_skillrank(/datum/skill/misc/stealing, 3, TRUE)
 			H.adjust_skillrank(/datum/skill/misc/lockpicking, 3, TRUE)
 			H.adjust_skillrank(/datum/skill/craft/traps, 3, TRUE)
-			H.cmode_music = 'sound/music/combat_treasurehunter.ogg'
+			H.cmode_music = 'sound/music/cmode/combat.ogg
 			ADD_TRAIT(H, TRAIT_DODGEEXPERT, TRAIT_GENERIC)
 			ADD_TRAIT(H, TRAIT_SEEPRICES, TRAIT_GENERIC)
 			ADD_TRAIT(H, TRAIT_GRAVEROBBER, TRAIT_GENERIC)
@@ -58,6 +63,7 @@
 				if("Sabre")
 					H.adjust_skillrank(/datum/skill/combat/swords, 1, TRUE)
 					beltr = /obj/item/rogueweapon/sword/sabre
+					r_hand = /obj/item/rogueweapon/scabbard/sword
 				if("Whip")
 					H.adjust_skillrank(/datum/skill/combat/whipsflails, 1, TRUE)
 					beltr = /obj/item/rogueweapon/whip
@@ -69,14 +75,9 @@
 
 		if("Thief")
 			to_chat(H, span_warning("You are a scoundrel and a thief. A master in getting into places you shouldn't be and taking things that aren't rightfully yours."))
-			pants = /obj/item/clothing/under/roguetown/trou/leather
 			armor = /obj/item/clothing/suit/roguetown/armor/leather
-			cloak = /obj/item/clothing/cloak/raincloak/mortus
-			shirt = /obj/item/clothing/suit/roguetown/armor/gambeson
 			backl = /obj/item/storage/backpack/rogue/backpack
 			backr = /obj/item/gun/ballistic/revolver/grenadelauncher/bow
-			belt = /obj/item/storage/belt/rogue/leather/knifebelt/iron
-			gloves = /obj/item/clothing/gloves/roguetown/fingerless
 			shoes = /obj/item/clothing/shoes/roguetown/boots
 			neck = /obj/item/storage/belt/rogue/pouch/coins/poor
 			wrists = /obj/item/clothing/wrists/roguetown/bracers/leather
@@ -87,8 +88,9 @@
 				/obj/item/rogueweapon/huntingknife/idagger/steel = 1,
 				/obj/item/lockpickring/mundane = 1,
 				/obj/item/recipe_book/survival = 1,
+				/obj/item/rogueweapon/scabbard/sheath = 1
 				)
-			H.cmode_music = 'sound/music/combat_rogue.ogg'
+			H.cmode_music = 'sound/music/cmode/combat.ogg
 			H.adjust_skillrank(/datum/skill/misc/tracking, 4, TRUE)
 			H.adjust_skillrank(/datum/skill/combat/knives, 3, TRUE)
 			H.adjust_skillrank(/datum/skill/combat/bows, 2, TRUE)
@@ -110,6 +112,36 @@
 			H.change_stat("endurance", 1)
 			H.change_stat("speed", 3)
 			H.grant_language(/datum/language/thievescant)
+			var/loadouts = list("Local Scoundrel","Eastern Agent")
+			var/loadout_choice = input("Choose your weapon.", "TAKE UP ARMS") as anything in loadouts
+			H.set_blindness(0)
+			switch(loadout_choice)
+				if("Local Scoundrel")
+					backpack_contents = list(
+						/obj/item/flashlight/flare/torch = 1,
+						/obj/item/rogueweapon/huntingknife/idagger/steel = 1,
+						/obj/item/lockpickring/mundane = 1,
+						/obj/item/recipe_book/survival = 1,
+						)
+					belt = /obj/item/storage/belt/rogue/leather/knifebelt/iron
+					gloves = /obj/item/clothing/gloves/roguetown/fingerless
+					pants = /obj/item/clothing/under/roguetown/trou/leather
+					shirt = /obj/item/clothing/suit/roguetown/armor/gambeson
+					cloak = /obj/item/clothing/cloak/raincloak/mortus
+				if("Eastern Agent")
+					backpack_contents = list(
+						/obj/item/flashlight/flare/torch = 1,
+						/obj/item/rogueweapon/huntingknife/idagger/steel/kazengun = 1,
+						/obj/item/rogueweapon/scabbard/sheath = 1,
+						/obj/item/lockpickring/mundane = 1,
+						/obj/item/recipe_book/survival = 1,
+						)
+					belt = /obj/item/storage/belt/rogue/leather/knifebelt/black/kazengun
+					gloves = /obj/item/clothing/gloves/roguetown/eastgloves1
+					pants = /obj/item/clothing/under/roguetown/trou/leather/eastern
+					shirt = /obj/item/clothing/suit/roguetown/shirt/undershirt/eastshirt1
+					cloak = /obj/item/clothing/cloak/thief_cloak
+					head = /obj/item/clothing/head/roguetown/mentorhat //other armor pieces are nerfed to justify this
 
 		if("Bard")
 			to_chat(H, span_warning("You make your fortune in brothels, flop houses, and taverns – gaining fame for your songs and legends. If there is any truth to them, that is."))
@@ -141,13 +173,14 @@
 			backpack_contents = list(
 				/obj/item/lockpick = 1,
 				/obj/item/recipe_book/survival = 1,
+				/obj/item/rogueweapon/scabbard/sheath = 1
 				)
 			if(H.mind)
 				H.mind.AddSpell(new /obj/effect/proc_holder/spell/invoked/mockery)
 			ADD_TRAIT(H, TRAIT_DODGEEXPERT, TRAIT_GENERIC)
 			ADD_TRAIT(H, TRAIT_GOODLOVER, TRAIT_GENERIC)
 			ADD_TRAIT(H, TRAIT_EMPATH, TRAIT_GENERIC)
-			H.cmode_music = 'sound/music/combat_bard.ogg'
+			H.cmode_music = 'sound/music/cmode/combat.ogg
 			var/weapons = list("Harp","Lute","Accordion","Guitar","Hurdy-Gurdy","Viola","Vocal Talisman")
 			var/weapon_choice = input("Choose your instrument.", "TAKE UP ARMS") as anything in weapons
 			H.set_blindness(0)
@@ -189,8 +222,9 @@
 				/obj/item/lockpick = 1,
 				/obj/item/rogueweapon/huntingknife/idagger/steel/parrying = 1,
 				/obj/item/recipe_book/survival = 1,
+				/obj/item/rogueweapon/scabbard/sheath = 1
 				)
-			H.cmode_music = 'sound/music/jukeboxes/oldschool/Sea_Shanty2.ogg'
+			H.cmode_music = 'sound/music/cmode/combat.ogg
 			H.adjust_skillrank(/datum/skill/combat/knives, 2, TRUE)
 			H.adjust_skillrank(/datum/skill/combat/swords, 3, TRUE)
 			H.adjust_skillrank(/datum/skill/misc/swimming, 4, TRUE)

@@ -5,7 +5,7 @@
 	allowed_races = RACES_ALL_KINDS
 	outfit = /datum/outfit/job/roguetown/bandit/sawbones
 	category_tags = list(CTAG_BANDIT)
-	cmode_music = 'sound/music/combat_physician.ogg'
+	cmode_music = 'sound/music/combat_bandit.ogg'
 
 /datum/outfit/job/roguetown/bandit/sawbones/pre_equip(mob/living/carbon/human/H)
 	..()
@@ -18,7 +18,8 @@
 	shirt = /obj/item/clothing/suit/roguetown/shirt/shortshirt
 	belt = /obj/item/storage/belt/rogue/leather
 	beltl = /obj/item/storage/belt/rogue/surgery_bag/full/physician
-	beltr = /obj/item/rogueweapon/sword/rapier
+	l_hand = /obj/item/rogueweapon/sword/rapier
+	beltr = /obj/item/rogueweapon/scabbard/sword
 	pants = /obj/item/clothing/under/roguetown/trou
 	shoes = /obj/item/clothing/shoes/roguetown/simpleshoes
 	backr = /obj/item/storage/backpack/rogue/satchel

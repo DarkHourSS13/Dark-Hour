@@ -18,7 +18,7 @@
 	min_pq = -10
 	max_pq = null
 	round_contrib_points = 2
-
+	
 /datum/outfit/job/roguetown/shophand/pre_equip(mob/living/carbon/human/H)
 	..()
 	ADD_TRAIT(H, TRAIT_SEEPRICES_SHITTY, "[type]")

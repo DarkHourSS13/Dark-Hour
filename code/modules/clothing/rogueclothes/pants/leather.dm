@@ -73,3 +73,7 @@
 	name = "baggy desert pants"
 	desc = "A handmade pair of baggy, thin leather pants. Keeps sand out of your boots, sun off your legs, and a creacher's fangs from piercing your ankles."
 	naledicolor = FALSE
+
+/obj/item/clothing/under/roguetown/trou/leather/eastern
+	icon_state = "eastpants1"
+	allowed_race = NON_DWARVEN_RACE_TYPES

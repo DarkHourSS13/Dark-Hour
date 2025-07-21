@@ -48,14 +48,14 @@
 	H.adjust_skillrank(/datum/skill/craft/tanning, 1, TRUE)
 	H.adjust_skillrank(/datum/skill/craft/cooking, 1, TRUE)
 	H.adjust_skillrank(/datum/skill/labor/butchering, 1, TRUE)
-	H.cmode_music = 'sound/music/combat_poacher.ogg'
 	var/weapons = list("Dagger","Axe", "Cudgel", "My Bow Is Enough")
 	var/weapon_choice = input("Choose your weapon.", "TAKE UP ARMS") as anything in weapons
 	H.set_blindness(0)
 	switch(weapon_choice)
 		if("Dagger")
 			H.adjust_skillrank(/datum/skill/combat/knives, 2, TRUE)
-			beltr = /obj/item/rogueweapon/huntingknife/idagger/steel
+			beltr = /obj/item/rogueweapon/scabbard/sheath
+			r_hand = /obj/item/rogueweapon/huntingknife/idagger/steel
 		if("Axe")
 			H.adjust_skillrank(/datum/skill/combat/axes, 2, TRUE)
 			beltr = /obj/item/rogueweapon/stoneaxe/woodcut

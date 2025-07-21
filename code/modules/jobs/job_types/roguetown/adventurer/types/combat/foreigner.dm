@@ -27,12 +27,12 @@
 			armor = /obj/item/clothing/suit/roguetown/armor/basiceast
 			shoes = /obj/item/clothing/shoes/roguetown/boots
 			neck = /obj/item/storage/belt/rogue/pouch/coins/poor
-			beltr = /obj/item/scabbard/mulyeog/
+			beltr = /obj/item/rogueweapon/scabbard/kazengun
 			beltl = /obj/item/rogueweapon/sword/sabre/mulyeog
 			belt = /obj/item/storage/belt/rogue/leather/black
 			backr = /obj/item/storage/backpack/rogue/satchel
 			H.adjust_skillrank(/datum/skill/combat/swords, 4, TRUE)
-			H.adjust_skillrank(/datum/skill/combat/shields, 4, TRUE)		//to encourage use of the scabbard as a shield	
+			H.adjust_skillrank(/datum/skill/combat/shields, 3, TRUE)		//to encourage use of the scabbard as a shield	
 			H.adjust_skillrank(/datum/skill/combat/wrestling, 2, TRUE)
 			H.adjust_skillrank(/datum/skill/combat/unarmed, 2, TRUE)
 			H.adjust_skillrank(/datum/skill/misc/swimming, 2, TRUE)
@@ -48,7 +48,7 @@
 			H.change_stat("endurance", 1)
 			H.change_stat("constitution", 2)
 			H.set_blindness(0)
-			H.cmode_music = 'sound/music/combat_kazengite.ogg'
+			
 
 		if("Custodian")
 			to_chat(H, span_warning("You are an ex-guardian, whenever that be for a petty noble, or a small shrine. You excel in defense with quarterstaffs, or have taken up the Naginata's offensive martial capabilities."))
@@ -81,6 +81,5 @@
 			H.change_stat("strength", 2) // Took off the weight and moved it to qstaff
 			H.change_stat("endurance", 1)
 			H.change_stat("constitution", 2)
-			H.cmode_music = 'sound/music/combat_kazengite.ogg'
 
 	H.grant_language(/datum/language/kazengunese)

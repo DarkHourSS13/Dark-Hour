@@ -10,7 +10,9 @@
 	layer = ABOVE_MOB_LAYER
 	plane = GAME_PLANE_UPPER
 	var/current_category = "Postings"
-	var/list/categories = list("Postings", "Premium Postings")
+	var/list/categories = list("Postings", "Premium Postings", "Quests")
+	/// Place to deposit completed scrolls or items
+	var/input_point
 
 /obj/structure/roguemachine/boardbarrier //Blocks sprite locations
 	name = ""
@@ -23,6 +25,10 @@
 /obj/structure/roguemachine/noticeboard/Initialize()
 	. = ..()
 	SSroguemachine.noticeboards += src
+	input_point = locate(x, y - 1, z)
+	var/obj/effect/decal/marker_export/marker = new(get_turf(input_point))
+	marker.desc = "Place completed quest scrolls here to turn them in."
+	marker.layer = ABOVE_OBJ_LAYER
 
 /datum/noticeboardpost
 	var/title
@@ -73,6 +79,18 @@
 	if(href_list["authorityremovepost"])
 		authority_removepost(usr)
 		return attack_hand(usr) 
+	if(href_list["consultquests"])
+		consult_quests(usr)
+		return attack_hand(usr) 
+	if(href_list["turninquest"])
+		turn_in_quest(usr)
+		return attack_hand(usr) 
+	if(href_list["abandonquest"])
+		abandon_quest(usr)
+		return attack_hand(usr) 
+	if(href_list["printquests"])
+		print_quests(usr)
+		return attack_hand(usr) 
 	return attack_hand(usr)
 
 /obj/structure/roguemachine/noticeboard/attack_hand(mob/living/carbon/human/user)
@@ -97,26 +115,33 @@
 		else
 			selection += "<a href='?src=[REF(src)];changecategory=[category]'>[category]</a> "
 	contents += selection + "<BR>"
-	contents += "<a href='?src=[REF(src)];makepost=1'>Make a Posting</a>"
-	if(can_premium)
-		contents += " | <a href='?src=[REF(src)];premiumpost=1'>Make a Premium Posting</a><br>"
-	else
-		contents += "<br>"
-	contents += "<a href='?src=[REF(src)];removepost=1'>Remove my Posting</a><br>"
-	if(can_remove)
-		contents += "<a href='?src=[REF(src)];authorityremovepost=1'>Authority: Remove a Posting</a>"
-	var/board_empty = TRUE
-	switch(current_category)
-		if("Postings")
-			for(var/datum/noticeboardpost/saved_post in GLOB.noticeboard_posts)
-				contents += saved_post.banner
-				board_empty = FALSE
-		if("Premium Postings")
-			for(var/datum/noticeboardpost/saved_post in GLOB.premium_noticeboardposts)
-				contents += saved_post.banner
-				board_empty = FALSE
-	if(board_empty)
-		contents += "<br><span class='notice'>No postings have been made yet!</span>"
+	if(current_category in list("Postings", "Premium Postings"))
+		contents += "<a href='?src=[REF(src)];makepost=1'>Make a Posting</a>"
+		if(can_premium)
+			contents += " | <a href='?src=[REF(src)];premiumpost=1'>Make a Premium Posting</a><br>"
+		else
+			contents += "<br>"
+		contents += "<a href='?src=[REF(src)];removepost=1'>Remove my Posting</a><br>"
+		if(can_remove)
+			contents += "<a href='?src=[REF(src)];authorityremovepost=1'>Authority: Remove a Posting</a>"
+		var/board_empty = TRUE
+		switch(current_category)
+			if("Postings")
+				for(var/datum/noticeboardpost/saved_post in GLOB.noticeboard_posts)
+					contents += saved_post.banner
+					board_empty = FALSE
+			if("Premium Postings")
+				for(var/datum/noticeboardpost/saved_post in GLOB.premium_noticeboardposts)
+					contents += saved_post.banner
+					board_empty = FALSE
+		if(board_empty)
+			contents += "<br><span class='notice'>No postings have been made yet!</span>"
+	else if(current_category == "Quests")
+		contents += "<a href='?src=[REF(src)];consultquests=1'>Consult Quests</a><br>"
+		contents += "<a href='?src=[REF(src)];turninquest=1'>Turn in Quest</a><br>"
+		contents += "<a href='?src=[REF(src)];abandonquest=1'>Abandon Quest</a><br>"
+		if(user.job == "Steward" || user.job == "Merchant")
+			contents += "<a href='?src=[REF(src)];printquests=1'>Print Issued Quests</a><br>"
 	var/datum/browser/popup = new(user, "NOTICEBOARD", "", 800, 650)
 	popup.set_content(contents)
 	popup.open()
@@ -266,3 +291,272 @@
 /atom/movable/screen/alert/status_effect/debuff/postcooldown
 	name = "Recent messenger"
 	desc = "I'll have to wait a bit before making another posting!"
+
+/obj/structure/roguemachine/noticeboard/proc/consult_quests(mob/user)
+	if(!(user in SStreasury.bank_accounts))
+		say("You have no bank account.")
+		return
+
+	var/list/difficulty_data = list(
+		QUEST_DIFFICULTY_EASY = list(
+			deposit = QUEST_DEPOSIT_EASY, 
+			reward_min = QUEST_REWARD_EASY_LOW, 
+			reward_max = QUEST_REWARD_EASY_HIGH, 
+			icon = "scroll_quest_low"
+		),
+		QUEST_DIFFICULTY_MEDIUM = list(
+			deposit = QUEST_DEPOSIT_MEDIUM, 
+			reward_min = QUEST_REWARD_MEDIUM_LOW, 
+			reward_max = QUEST_REWARD_MEDIUM_HIGH, 
+			icon = "scroll_quest_mid"
+		),
+		QUEST_DIFFICULTY_HARD = list(
+			deposit = QUEST_DEPOSIT_HARD, 
+			reward_min = QUEST_REWARD_HARD_LOW, 
+			reward_max = QUEST_REWARD_HARD_HIGH, 
+			icon = "scroll_quest_high"
+		)
+	)
+
+	// Create a list with formatted difficulty choices showing deposits
+	var/list/difficulty_choices = list()
+	for(var/difficulty in difficulty_data)
+		var/deposit = difficulty_data[difficulty]["deposit"]
+		difficulty_choices["[difficulty] ([deposit] mammon deposit)"] = difficulty
+
+	var/selection = input(user, "Select quest difficulty (deposit required)", src) as null|anything in difficulty_choices
+	if(!selection)
+		return
+
+	// Get the actual difficulty key from our formatted choice
+	var/actual_difficulty = difficulty_choices[selection]
+	var/deposit = difficulty_data[actual_difficulty]["deposit"]
+
+	if(SStreasury.bank_accounts[user] < deposit)
+		say("Insufficient balance funds. You need [deposit] mammons in your meister.")
+		return
+
+	var/list/type_choices = list(
+		QUEST_DIFFICULTY_EASY = list(QUEST_FETCH, QUEST_COURIER, QUEST_KILL),
+		QUEST_DIFFICULTY_MEDIUM = list(QUEST_CLEAR_OUT),
+		QUEST_DIFFICULTY_HARD = list(QUEST_MINIBOSS)
+	)
+
+	var/type_selection = input(user, "Select quest type", src) as null|anything in type_choices[actual_difficulty] // Changed from selection to actual_difficulty
+	if(!type_selection)
+		return
+
+	// Continue with the rest of the proc using actual_difficulty instead of selection
+	var/datum/quest/attached_quest = new()
+	attached_quest.reward_amount = rand(difficulty_data[actual_difficulty]["reward_min"], difficulty_data[actual_difficulty]["reward_max"]) // Changed from selection to actual_difficulty
+	attached_quest.quest_difficulty = actual_difficulty // Changed from selection to actual_difficulty
+	attached_quest.quest_type = type_selection
+
+	var/obj/item/paper/scroll/quest/spawned_scroll = new(get_turf(src))
+	spawned_scroll.base_icon_state = difficulty_data[actual_difficulty]["icon"] // Changed from selection to actual_difficulty
+	spawned_scroll.assigned_quest = attached_quest
+	attached_quest.quest_scroll_ref = WEAKREF(spawned_scroll)
+
+	if(user.job != "Merchant" && user.job != "Steward")
+		attached_quest.quest_receiver_reference = WEAKREF(user)
+		attached_quest.quest_receiver_name = user.real_name
+	else
+		attached_quest.quest_giver_name = user.real_name
+		attached_quest.quest_giver_reference = WEAKREF(user)
+
+	var/obj/effect/landmark/quest_spawner/chosen_landmark = find_quest_landmark(actual_difficulty, type_selection) // Changed from selection to actual_difficulty
+	if(!chosen_landmark)
+		to_chat(user, span_warning("No suitable location found for this quest!"))
+		qdel(attached_quest)
+		qdel(spawned_scroll)
+		return
+
+	chosen_landmark.generate_quest(attached_quest, (user.job == "Steward" || user.job == "Merchant") ? null : user)
+	spawned_scroll.update_quest_text()
+	SStreasury.bank_accounts[user] -= deposit
+	SStreasury.treasury_value += deposit
+	SStreasury.log_entries += "+[deposit] to treasury (quest deposit)"
+
+/obj/structure/roguemachine/noticeboard/proc/find_quest_landmark(difficulty, type)
+	// First try to find landmarks that match both difficulty AND type
+	var/list/correctest_landmarks = list()
+	GLOB.quest_landmarks_list = shuffle(GLOB.quest_landmarks_list)
+	for(var/obj/effect/landmark/quest_spawner/landmark in GLOB.quest_landmarks_list)
+		if(landmark.quest_difficulty != difficulty || !(type in landmark.quest_type))
+			continue
+
+		var/has_clients_around = FALSE
+		for(var/mob/M in get_hearers_in_view(world.view, landmark))
+			if(!M.client)
+				continue
+
+			has_clients_around = TRUE
+
+		if(has_clients_around)
+			continue
+
+		correctest_landmarks += landmark
+
+	if(length(correctest_landmarks))
+		return pick(correctest_landmarks)
+
+	// If none found, try landmarks that match just the difficulty
+	var/list/correcter_landmarks = list()
+	for(var/obj/effect/landmark/quest_spawner/landmark in GLOB.quest_landmarks_list)
+		if(landmark.quest_difficulty != difficulty)
+			continue
+
+		var/has_clients_around = FALSE
+		for(var/mob/M in get_hearers_in_view(world.view, landmark))
+			if(!M.client)
+				continue
+
+			has_clients_around = TRUE
+
+		if(has_clients_around)
+			continue
+
+		correcter_landmarks += landmark
+
+	if(length(correcter_landmarks))
+		return pick(correcter_landmarks)
+
+	return null
+
+/obj/structure/roguemachine/noticeboard/proc/turn_in_quest(mob/user)
+	var/reward = 0
+	var/original_reward = 0
+	var/total_deposit_return = 0
+
+	for(var/atom/movable/pawnable_loot in input_point)
+		if(istype(pawnable_loot, /obj/item/paper/scroll/quest))
+			var/obj/item/paper/scroll/quest/turned_in_scroll = pawnable_loot
+			if(turned_in_scroll.assigned_quest?.complete)
+				// Calculate base reward
+				var/base_reward = turned_in_scroll.assigned_quest.reward_amount
+				original_reward += base_reward
+				
+				// Calculate deposit return based on difficulty
+				var/deposit_return = turned_in_scroll.assigned_quest.quest_difficulty == QUEST_DIFFICULTY_EASY ? QUEST_DEPOSIT_EASY : \
+									turned_in_scroll.assigned_quest.quest_difficulty == QUEST_DIFFICULTY_MEDIUM ? QUEST_DEPOSIT_MEDIUM : QUEST_DEPOSIT_HARD
+				total_deposit_return += deposit_return
+				
+				// Apply Steward/Mechant bonus if applicable (only to the base reward)
+				if(user.job == "Steward" || user.job == "Merchant")
+					reward += base_reward * QUEST_HANDLER_REWARD_MULTIPLIER
+				else
+					reward += base_reward
+				
+				// Add deposit return to both reward totals
+				reward += deposit_return
+				original_reward += deposit_return
+				
+				qdel(turned_in_scroll.assigned_quest)
+				qdel(turned_in_scroll)
+				continue
+
+	cash_in(round(reward), original_reward)
+
+/obj/structure/roguemachine/noticeboard/proc/cash_in(reward, original_reward)
+	var/list/coin_types = list(
+		/obj/item/roguecoin/gold = FLOOR(reward / 10, 1),
+		/obj/item/roguecoin/silver = FLOOR(reward % 10 / 5, 1),
+		/obj/item/roguecoin/copper = reward % 5
+	)
+
+	for(var/coin_type in coin_types)
+		var/amount = coin_types[coin_type]
+		if(amount > 0)
+			var/obj/item/roguecoin/coin_stack = new coin_type(get_turf(src))
+			coin_stack.quantity = amount
+			coin_stack.update_icon()
+			coin_stack.update_transform()
+
+	if(reward > 0)
+		say(reward != original_reward ? \
+			"Your handler assistance-increased reward of [reward] mammons has been dispensed! The difference is [reward - original_reward] mammons." : \
+			"Your reward of [reward] mammons has been dispensed.")
+
+/obj/structure/roguemachine/noticeboard/proc/abandon_quest(mob/user)
+	var/obj/item/paper/scroll/quest/abandoned_scroll = locate() in input_point
+	if(!abandoned_scroll)
+		to_chat(user, span_warning("No quest scroll found in the input area!"))
+		return
+
+	var/datum/quest/quest = abandoned_scroll.assigned_quest
+	if(!quest)
+		to_chat(user, span_warning("This scroll doesn't have an assigned quest!"))
+		return
+
+	if(quest.complete)
+		turn_in_quest(user)
+		return
+
+	var/refund = quest.quest_difficulty == QUEST_DIFFICULTY_EASY ? QUEST_DEPOSIT_EASY : \
+				quest.quest_difficulty == QUEST_DIFFICULTY_MEDIUM ? QUEST_DEPOSIT_MEDIUM : QUEST_DEPOSIT_HARD
+
+	// First try to return to quest giver
+	var/mob/giver = quest.quest_giver_reference?.resolve()
+	if(giver && (giver in SStreasury.bank_accounts))
+		SStreasury.bank_accounts[giver] += refund
+		SStreasury.treasury_value -= refund
+		SStreasury.log_entries += "-[refund] from treasury (quest refund to handler)"
+		to_chat(user, span_notice("The deposit has been returned to the quest giver."))
+	// Otherwise try quest receiver
+	else if(quest.quest_receiver_reference)
+		var/mob/receiver = quest.quest_receiver_reference.resolve()
+		if(receiver && (receiver in SStreasury.bank_accounts))
+			SStreasury.bank_accounts[receiver] += refund
+			SStreasury.treasury_value -= refund
+			SStreasury.log_entries += "-[refund] from treasury (quest refund to volunteer)"
+			to_chat(user, span_notice("You receive a [refund] mammon refund for abandoning the quest."))
+		else
+			cash_in(refund)
+			SStreasury.treasury_value -= refund
+			SStreasury.log_entries += "-[refund] from treasury (quest refund)"
+			to_chat(user, span_notice("Your refund of [refund] mammon has been dispensed."))
+
+	// Clean up quest items
+	if(quest.quest_type == QUEST_COURIER && quest.target_delivery_item)
+		quest.target_delivery_item = null
+		for(var/obj/item/I in world)
+			if(istype(I, quest.target_delivery_item))
+				var/datum/component/quest_object/Q = I.GetComponent(/datum/component/quest_object)
+				if(Q && Q.quest_ref == WEAKREF(quest))
+					I.remove_filter("quest_item_outline")
+					qdel(Q)
+					qdel(I)
+
+	abandoned_scroll.assigned_quest = null
+	qdel(quest)
+	qdel(abandoned_scroll)
+
+/obj/structure/roguemachine/noticeboard/proc/print_quests(mob/user)
+	var/list/active_quests = list()
+	for(var/obj/item/paper/scroll/quest/quest_scroll in world)
+		if(quest_scroll.assigned_quest && !quest_scroll.assigned_quest.complete)
+			active_quests += quest_scroll
+
+	if(!length(active_quests))
+		say("No active quests found.")
+		return
+
+	var/obj/item/paper/scroll/report = new(get_turf(src))
+	report.name = "Guild Quest Report"
+	report.desc = "A list of currently active quests issued by the Adventurers' Guild."
+
+	var/report_text = "<center><b>ADVENTURER'S GUILD - ACTIVE QUESTS</b></center><br><br>"
+	report_text += "<i>Generated on [station_time_timestamp()]</i><br><br>"
+
+	for(var/obj/item/paper/scroll/quest/quest_scroll in active_quests)
+		var/datum/quest/quest = quest_scroll.assigned_quest
+		var/area/quest_area = get_area(quest_scroll)
+		report_text += "<b>Title:</b> [quest.title].<br>"
+		report_text += "<b>Recipient:</b> [quest.quest_receiver_name ? quest.quest_receiver_name : "Unclaimed"].<br>"
+		report_text += "<b>Type:</b> [quest.quest_type].<br>"
+		report_text += "<b>Difficulty:</b> [quest.quest_difficulty].<br>"
+		report_text += "<b>Last Known Location:</b> [quest_area ? quest_area.name : "Unknown Location"].<br>"
+		report_text += "<b>Reward:</b> [quest.reward_amount] mammons.<br><br>"
+
+	report.info = report_text
+	say("Quest report printed.")

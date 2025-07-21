@@ -55,18 +55,75 @@
 	)
 	var/is_public = FALSE // Whether it is a public access vendor.
 	var/extra_fee = 0 // Extra Guild Fees on purchases. Meant to make publicface very unprofitable.
-	var/stored_profit = 0 // Stored profit from the public vendor.
 
 /obj/structure/roguemachine/goldface/public
 	name = "SILVERFACE"
 	extra_fee = 0.5
 	is_public = TRUE
 	locked = FALSE
+	categories = list(
+		"Adventuring Supplies",
+		"Alcohols",
+		"Consumable",
+		"Gems",
+		"Instruments",
+		"Luxury",
+		"Livestock",
+		"Perfumes",
+		"Raw Materials",
+		"Seeds",
+		"Tools",
+		"Weapons (Foreign)",
+	)
+	categories_gamer = list()
 
 /obj/structure/roguemachine/goldface/public/examine()
 	. = ..()
 	. += "<span class='info'>A public version of the GOLDFACE. The guild charges a hefty fee for its usage. When locked, can be used to browse the inventory a merchant has.</span>"
-	. += "<span class='info'>An agreement between the Azurean Guild of Crafts and the Merchant's Guild mandates 100% extra profits on certain protected categories such as gems and steel gears when automated. And 50% on potions.</span>"
+	. += "<span class='info'>An agreement between the Guild of Craft and the Merchant's Guild mandates that certain protected goods are sold in a separate vendor that can be locked by the guildmembers.</span>"
+	. += "<span class='info'>The vendor can be locked by a key. The merchant make no profit whatsoever from the public vendor as the guild charges an exorbitant markup for automated handling.</span>"
+
+/obj/structure/roguemachine/goldface/public/smith
+	name = "Smithy's SILVERFACE"
+	lockid = "crafterguild"
+	categories = list(
+		"Armor (Iron)",
+		"Armor (Steel)",
+		"Weapons (Ranged)",
+		"Weapons (Iron and Shields)",
+		"Weapons (Steel)",
+	)
+	categories_gamer = list()
+
+/obj/structure/roguemachine/goldface/public/smith/examine()
+	. = ..()
+	. += span_info("This can be locked by a guild's key")
+
+/obj/structure/roguemachine/goldface/public/tailor
+	name = "Tailor's SILVERFACE"
+	lockid = "tailor"
+	categories = list(
+		"Apparel",
+		"Wardrobe",
+		"Armor (Light)",
+	)
+	categories_gamer = list()
+
+/obj/structure/roguemachine/goldface/public/tailor/examine()
+	. = ..()
+	. += span_info("This can be locked by a tailor's key")
+
+/obj/structure/roguemachine/goldface/public/apothecary
+	name = "Apothecary's SILVERFACE"
+	lockid = "physician"
+	categories = list(
+		"Potions",
+	)
+	categories_gamer = list()
+
+/obj/structure/roguemachine/goldface/public/tailor/examine()
+	. = ..()
+	. += span_info("This can be locked by a physician's key")
 
 /obj/structure/roguemachine/goldface/Initialize()
 	. = ..()
@@ -92,14 +149,18 @@
 		else
 			to_chat(user, span_warning("Wrong key."))
 			return
-	if(istype(P, /obj/item/storage/keyring))
-		var/obj/item/storage/keyring/K = P
-		for(var/obj/item/roguekey/KE in K.keys)
+	else if(istype(P, /obj/item/storage/keyring))
+		var/right_key = FALSE
+		for(var/obj/item/roguekey/KE in P.contents)
 			if(KE.lockid == lockid)
+				right_key = TRUE
 				locked = !locked
 				playsound(loc, 'sound/misc/gold_misc.ogg', 100, FALSE, -1)
 				update_icon()
 				return attack_hand(user)
+		if(!right_key)
+			to_chat(user, span_warning("Wrong key."))
+			return
 	if(istype(P, /obj/item/roguecoin))
 		budget += P.get_real_price()
 		qdel(P)
@@ -122,17 +183,13 @@
 			message_admins("silly MOTHERFUCKER [usr.key] IS TRYING TO BUY A [path] WITH THE GOLDFACE")
 			return
 		var/datum/supply_pack/PA = SSmerchant.supply_packs[path]
-		var/cost = round(PA.cost + PA.cost * extra_fee)
-		var/mandated_public_profit = is_public ? round(PA.cost * PA.mandated_public_profit) : 0
-		if(is_public)
-			cost = cost + mandated_public_profit
-		var/tax_amt = round(SStreasury.tax_value * cost)
+		var/cost = PA.cost + PA.cost * extra_fee
+		var/tax_amt = round(SStreasury.tax_value * PA.cost)
 		if(!(upgrade_flags & UPGRADE_NOTAX))
 			cost = cost + tax_amt
+		cost = round(cost)
 		if(budget >= cost)
 			budget -= cost
-			if(mandated_public_profit)
-				stored_profit += mandated_public_profit
 			if(!(upgrade_flags & UPGRADE_NOTAX))
 				SStreasury.give_money_treasury(tax_amt, "goldface import tax")
 				record_featured_stat(FEATURED_STATS_TAX_PAYERS, human_mob, tax_amt)
@@ -158,9 +215,6 @@
 			var/mob/living/carbon/human/H = usr
 			if(!(H.job in list("Merchant","Shophand")))
 				return // Only merchants and shophands can withdraw profit. I see you href hacker
-			if(stored_profit > 0)
-				budget2change(stored_profit, usr)
-				stored_profit = 0
 	if(href_list["secrets"])
 		var/list/options = list()
 		if(upgrade_flags & UPGRADE_NOTAX)
@@ -207,9 +261,6 @@
 				contents += "<a href='?src=[REF(src)];secrets=1'>Secrets</a>"
 			else
 				contents += "<a href='?src=[REF(src)];secrets=1'>[stars("Secrets")]</a>"
-		else
-			contents += "<a href='?src=[REF(src)];withdrawgain=1'>Stored Profits:</a> [stored_profit]<BR>"
-
 	contents += "</center><BR>"
 
 	if(current_cat == "1")
@@ -236,11 +287,10 @@
 			if(PA.group == current_cat)
 				pax += PA
 		for(var/datum/supply_pack/PA in sortNames(pax))
-			var/costy = round(PA.cost + PA.cost * extra_fee)
-			if(is_public)
-				costy = costy + round(PA.cost * PA.mandated_public_profit)
+			var/costy = PA.cost + PA.cost * extra_fee
 			if(!(upgrade_flags & UPGRADE_NOTAX))
 				costy = costy + round(SStreasury.tax_value * PA.cost)
+			costy = round(costy)
 			var/quantified_name = PA.no_name_quantity ? PA.name : "[PA.name] [PA.contains.len > 1?"x[PA.contains.len]":""]"
 			if(is_public && locked) 
 				contents += "[quantified_name]<BR>"

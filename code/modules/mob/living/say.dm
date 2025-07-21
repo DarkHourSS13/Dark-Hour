@@ -148,10 +148,10 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 	if(check_subtler(original_message, forced) || !can_speak_basic(original_message, ignore_spam, forced))
 		return
 	//RATWOOD SUBTLER END
-	if(in_critical)
+	if(in_critical && !forced)
 		if(!(crit_allowed_modes[message_mode]))
 			return
-	else if(stat == UNCONSCIOUS)
+	else if(stat == UNCONSCIOUS && !forced)
 		if(!(unconscious_allowed_modes[message_mode]))
 			return
 

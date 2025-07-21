@@ -35,6 +35,9 @@
 /mob/living/proc/spread_bodyparts()
 	return
 
+/// Length of the animation in dust_animation.dmi
+#define DUST_ANIMATION_TIME 1.3 SECONDS
+
 /mob/living/dust(just_ash, drop_items, force)
 	death(TRUE)
 
@@ -47,11 +50,36 @@
 		buckled.unbuckle_mob(src, force = TRUE)
 
 	dust_animation()
-	spawn_dust(just_ash)
-	QDEL_IN(src,5) // since this is sometimes called in the middle of movement, allow half a second for movement to finish, ghosting to happen and animation to play. Looks much nicer and doesn't cause multiple runtimes.
+	addtimer(CALLBACK(src, PROC_REF(spawn_dust), just_ash), DUST_ANIMATION_TIME - 0.3 SECONDS)
+	QDEL_IN(src, DUST_ANIMATION_TIME) // since this is sometimes called in the middle of movement, allow half a second for movement to finish, ghosting to happen and animation to play. Looks much nicer and doesn't cause multiple runtimes.
 
-/mob/living/proc/dust_animation()
-	return
+/// Animates turning into dust
+/// Does not delete src afterwards, BUT it will become invisible (and grey), so ensure you handle that yourself
+/atom/movable/proc/dust_animation(atom/anim_loc = src.loc)
+	if(isnull(anim_loc)) // the effect breaks if we have a null loc
+		return
+	var/obj/effect/temp_visual/dust_animation_filter/dustfx = new(anim_loc, REF(src))
+	add_filter("dust_animation", 1, displacement_map_filter(render_source = dustfx.render_target, size = 256))
+	add_filter("dust_color", 1, color_matrix_filter())
+	transition_filter("dust_color", color_matrix_filter(list(0.33,0.33,0.33,0, 0.59,0.59,0.59,0, 0.11,0.11,0.11,0, 0,0,0,1, 0,0,0,0)), DUST_ANIMATION_TIME - 0.3 SECONDS)
+	animate(src, alpha = 0, time = DUST_ANIMATION_TIME - 0.1 SECONDS, easing = SINE_EASING | EASE_IN)
+
+/// Holds the dust animation filter effect, so we can animate it
+/obj/effect/temp_visual/dust_animation_filter
+	icon = 'icons/mob/dust_animation.dmi'
+	icon_state = "dust.1"
+	duration = DUST_ANIMATION_TIME
+	randomdir = FALSE
+
+/obj/effect/temp_visual/dust_animation_filter/Initialize(mapload, anim_id = "random_default_anti_collision_text")
+	. = ..()
+	// we manually animate this, rather than just using an animated icon state or flick, to work around byond animated state memes
+	// (normally, all animated icon states are synced to the same time, which would bad here)
+	for(var/i in 2 to duration)
+		animate(src, time = 1, icon_state = "dust.[i]", flags = ANIMATION_CONTINUE)
+	render_target = "*dust-[anim_id]"
+
+#undef DUST_ANIMATION_TIME
 
 /mob/living/proc/spawn_dust(just_ash = FALSE)
 	for(var/i in 1 to 3)

@@ -85,10 +85,25 @@
 	desc = "A large shirt with heavy padding meant to be used below armor. Will probably stop an arrow, unlikely to stop a bolt."
 	icon_state = "fancygamb"
 	allowed_race = NON_DWARVEN_RACE_TYPES
-	color = "#282e83"
-	detail_color = "#c7732f"
+	color = "#5058c1"
+	detail_color = "#e98738"
 	shiftable = FALSE
 	sellprice = 30
+	var/picked = FALSE
+
+/obj/item/clothing/suit/roguetown/armor/gambeson/heavy/otavan/attack_right(mob/user)
+	..()
+	if(!picked)
+		var/choice = input(user, "Choose a color.", "Otavan colors") as anything in colorlist
+		var/playerchoice = colorlist[choice]
+		picked = TRUE
+		detail_color = playerchoice
+		detail_tag = "_detail"
+		update_icon()
+		if(loc == user && ishuman(user))
+			var/mob/living/carbon/H = user
+			H.update_inv_shirt()
+			H.update_icon()
 
 /obj/item/clothing/suit/roguetown/armor/gambeson/heavy/otavan/update_icon()
 	cut_overlays()

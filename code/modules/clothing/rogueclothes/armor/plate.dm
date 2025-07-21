@@ -83,11 +83,12 @@
 
 /obj/item/clothing/suit/roguetown/armor/plate/fluted/ornate/equipped(mob/living/user, slot)
 	. = ..()
-	user.apply_status_effect(/datum/status_effect/buff/psydonic_endurance)
+	if(slot == SLOT_ARMOR)
+		user.apply_status_effect(/datum/status_effect/buff/psydonic_endurance)
 
-/obj/item/clothing/suit/roguetown/armor/plate/full/fluted/ornate/dropped(mob/living/carbon/human/user)
+/obj/item/clothing/suit/roguetown/armor/plate/fluted/ornate/dropped(mob/living/carbon/human/user)
 	. = ..()
-	if(istype(user) && user.wear_armor == src)
+	if(istype(user) && user?.wear_armor == src)
 		user.remove_status_effect(/datum/status_effect/buff/psydonic_endurance)
 
 // Full plate armor
@@ -129,26 +130,14 @@
 	var/traited = FALSE
 
 /obj/item/clothing/suit/roguetown/armor/plate/full/fluted/ornate/equipped(mob/living/user, slot)
-	..()
-	if(slot != SLOT_ARMOR)
-		return
-	user.change_stat("endurance", 1)
-	user.change_stat("constitution", 1)
-	to_chat(user, span_notice("Endure til' inevitability."))
-	if (!HAS_TRAIT(user, TRAIT_MEDIUMARMOR))
-		return
-	if (HAS_TRAIT(user, TRAIT_HEAVYARMOR))
-		traited = TRUE
-		return
-	ADD_TRAIT(user, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
+	. = ..()
+	if(slot == SLOT_ARMOR)
+		user.apply_status_effect(/datum/status_effect/buff/psydonic_endurance)
 
-/obj/item/clothing/suit/roguetown/armor/plate/full/fluted/ornate/dropped(mob/living/user)
-	..()
-	user.change_stat("endurance", -1)
-	user.change_stat("constitution", -1)
-	to_chat(user, span_notice("Trust in thyself."))
-	if (!traited)
-		REMOVE_TRAIT(user, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
+/obj/item/clothing/suit/roguetown/armor/plate/full/fluted/ornate/dropped(mob/living/carbon/human/user)
+	. = ..()
+	if(istype(user) && user?.wear_armor == src)
+		user.remove_status_effect(/datum/status_effect/buff/psydonic_endurance)
 
 /obj/item/clothing/suit/roguetown/armor/plate/full/matthios
 	name = "gilded fullplate"
@@ -244,7 +233,8 @@
 	allowed_race = NON_DWARVEN_RACE_TYPES
 	detail_tag = "_detail"
 	color = "#FFFFFF"
-	detail_color = "#282e83"
+	detail_color = "#5058c1"
+	var/swapped_color // holder for corset colour when the corset is toggled off.
 
 /obj/item/clothing/suit/roguetown/armor/plate/otavan/update_icon()
 	cut_overlays()
@@ -264,6 +254,8 @@
 			body_parts_covered = CHEST|GROIN|VITALS
 			flags_cover = null
 			emote_environment = 0
+			swapped_color = detail_color
+			detail_color = "#ffffff"
 			update_icon()
 			if(ishuman(user))
 				var/mob/living/carbon/H = user
@@ -271,6 +263,7 @@
 			block2add = null
 		else if(adjustable == CADJUSTED)
 			ResetAdjust(user)
+			detail_color = swapped_color
 			emote_environment = 3
 			update_icon()
 			if(user)

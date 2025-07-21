@@ -218,8 +218,23 @@
 	blocksound = PLATEHIT
 	allowed_race = NON_DWARVEN_RACE_TYPES
 	detail_tag = "_detail"
-	color = "#282e83"
-	detail_color = "#c7732f"
+	color = "#5058c1"
+	detail_color = "#e98738"
+	var/picked = FALSE
+
+/obj/item/clothing/neck/roguetown/fencerguard/attack_right(mob/user)
+	..()
+	if(!picked)
+		var/choice = input(user, "Choose a color.", "Otavan colors") as anything in colorlist
+		var/playerchoice = colorlist[choice]
+		picked = TRUE
+		detail_color = playerchoice
+		detail_tag = "_detail"
+		update_icon()
+		if(loc == user && ishuman(user))
+			var/mob/living/carbon/H = user
+			H.update_inv_shirt()
+			H.update_icon()
 
 /obj/item/clothing/neck/roguetown/fencerguard/update_icon()
 	cut_overlays()
