@@ -90,5 +90,5 @@
 	  		/datum/patron/inhumen/matthios,
 	   		/datum/patron/inhumen/graggar,
 	   		/datum/patron/inhumen/baotha)
-			H.cmode_music = 'sound/music/combat.ogg'
+			H.cmode_music = 'sound/music/cmode/combat.ogg
 			ADD_TRAIT(H, TRAIT_HERESIARCH, TRAIT_GENERIC)

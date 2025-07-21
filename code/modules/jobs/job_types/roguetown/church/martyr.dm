@@ -401,13 +401,13 @@
 			switch(status_flag)
 				if(STATE_MARTYR)
 					SEND_SOUND(H, sound(null))
-					H.cmode_music = 'sound/music/combat.ogg'
+					H.cmode_music = 'sound/music/cmode/combat.ogg
 					to_chat(H, span_warning("I can feel my muscles nearly burst from power! I can jump great heights!"))
 					ADD_TRAIT(H, TRAIT_ZJUMP, TRAIT_GENERIC)
 					ADD_TRAIT(H, TRAIT_NOFALLDAMAGE2, TRAIT_GENERIC)
 				if(STATE_MARTYRULT)
 					SEND_SOUND(H, sound(null))
-					H.cmode_music = 'sound/music/combat.ogg'
+					H.cmode_music = 'sound/music/cmode/combat.ogg
 					to_chat(H, span_warning("I can jump great heights!"))
 					ADD_TRAIT(H, TRAIT_ZJUMP, TRAIT_GENERIC)
 					ADD_TRAIT(H, TRAIT_NOFALLDAMAGE2, TRAIT_GENERIC)

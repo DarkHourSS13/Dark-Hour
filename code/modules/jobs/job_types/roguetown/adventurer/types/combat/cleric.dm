@@ -358,16 +358,16 @@
 			neck = /obj/item/clothing/neck/roguetown/psicross/eora
 			H.cmode_music = 'sound/music/cmode/church/combat_eora.ogg'
 		if(/datum/patron/inhumen/zizo)
-			H.cmode_music = 'sound/music/combat.ogg'
+			H.cmode_music = 'sound/music/cmode/combat.ogg
 		if (/datum/patron/inhumen/matthios)
-			H.cmode_music = 'sound/music/combat.ogg'
+			H.cmode_music = 'sound/music/cmode/combat.ogg
 		if (/datum/patron/inhumen/graggar)
-			H.cmode_music = 'sound/music/combat.ogg'
+			H.cmode_music = 'sound/music/cmode/combat.ogg
 		if (/datum/patron/inhumen/baotha)
-			H.cmode_music = 'sound/music/combat.ogg'
+			H.cmode_music = 'sound/music/cmode/combat.ogg
 		if(/datum/patron/divine/xylix)
 			neck = /obj/item/clothing/neck/roguetown/luckcharm
-			H.cmode_music = 'sound/music/combat.ogg'
+			H.cmode_music = 'sound/music/cmode/combat.ogg
 		if(/datum/patron/inhumen/zizo,
 	  		/datum/patron/inhumen/matthios,
 	   		/datum/patron/inhumen/graggar,
