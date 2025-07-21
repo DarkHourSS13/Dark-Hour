@@ -221,7 +221,6 @@
 			backl = /obj/item/storage/backpack/rogue/satchel
 			head = /obj/item/clothing/head/roguetown/jester
 			neck = /obj/item/storage/belt/rogue/pouch/coins/mid
-			H.cmode_music = 'sound/music/combat_jester.ogg'
 			backpack_contents = list(
 				/obj/item/smokebomb = 3,
 				/obj/item/storage/pill_bottle/dice = 1,

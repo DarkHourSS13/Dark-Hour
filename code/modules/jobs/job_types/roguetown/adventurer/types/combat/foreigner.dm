@@ -48,7 +48,7 @@
 			H.change_stat("endurance", 1)
 			H.change_stat("constitution", 2)
 			H.set_blindness(0)
-			H.cmode_music = 'sound/music/combat_kazengite.ogg'
+			
 
 		if("Custodian")
 			to_chat(H, span_warning("You are an ex-guardian, whenever that be for a petty noble, or a small shrine. You excel in defense with quarterstaffs, or have taken up the Naginata's offensive martial capabilities."))
@@ -81,6 +81,5 @@
 			H.change_stat("strength", 2) // Took off the weight and moved it to qstaff
 			H.change_stat("endurance", 1)
 			H.change_stat("constitution", 2)
-			H.cmode_music = 'sound/music/combat_kazengite.ogg'
 
 	H.grant_language(/datum/language/kazengunese)

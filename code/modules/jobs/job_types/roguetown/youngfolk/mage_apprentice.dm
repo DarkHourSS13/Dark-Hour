@@ -84,7 +84,6 @@
 	H.change_stat("speed", 1)
 	switch(H.patron?.type)
 		if(/datum/patron/inhumen/zizo)
-			H.cmode_music = 'sound/music/combat_heretic.ogg'
 
 /datum/advclass/wapprentice/alchemist
 	name = "Alchemist Associate"
@@ -130,7 +129,6 @@
 	ADD_TRAIT(H, TRAIT_SEEDKNOW, TRAIT_GENERIC)
 	switch(H.patron?.type)
 		if(/datum/patron/inhumen/zizo)
-			H.cmode_music = 'sound/music/combat_heretic.ogg'
 
 /datum/advclass/wapprentice/apprentice
 	name = "Magician's Apprentice"
@@ -165,6 +163,3 @@
 		H.change_stat("speed", -1)
 		H.change_stat("intelligence", 1)
 		H?.mind.adjust_spellpoints(3)
-	switch(H.patron?.type)
-		if(/datum/patron/inhumen/zizo)
-			H.cmode_music = 'sound/music/combat_heretic.ogg'

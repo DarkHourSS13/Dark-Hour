@@ -6,7 +6,7 @@
 	outfit = /datum/outfit/job/roguetown/mercenary/freelancer
 	category_tags = list(CTAG_MERCENARY)
 	traits_applied = list(TRAIT_OUTLANDER)
-	cmode_music = 'sound/music/combat_noble.ogg'	
+		
 	classes = list("Fencer" = "You are a master in the arts of the longsword. Wielder of Psydonia's most versatile and noble weapon, you needn't anything else.",
 					"Lancer" = "You put complete trust in your polearm, the most effective weapon the world has seen. Why wear armour when you cannot be hit?")
 					//"Cortador" = "You completely forego long arms, having proven yourself effective in the teachings of the Etruscan knife-fighting masters of old. Your knife and traditionally decorated cloth shield are unrivaled.")
