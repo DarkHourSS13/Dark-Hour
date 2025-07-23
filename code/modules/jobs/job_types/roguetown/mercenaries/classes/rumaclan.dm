@@ -6,7 +6,7 @@
 	outfit = /datum/outfit/job/roguetown/mercenary/rumaclan
 	category_tags = list(CTAG_MERCENARY)
 	traits_applied = list(TRAIT_OUTLANDER)
-	cmode_music = 'sound/music/combat_kazengite.ogg'
+	cmode_music = 'sound/music/cmode/combat.ogg'
 	classes = list("Ashigaru" = "You are a foot soldier in the mercenary armies of the Hasikobe Clan. You are issued with a blade, and provided with the traditional tattoos befitting a soldier of the Hasikobe clan, but not much else. Nevertheless, your duty is to bring honour and coin to the clan name- even if the other Daimyos do not see the Hasikobe that way.",
 					"Shashu" = "You are an archer. Pretty good in the art of \"pelting until enemy death.\" - You would gladly take up most jobs for money, or a chance to shoot loose.")
 /datum/outfit/job/roguetown/mercenary/rumaclan/pre_equip(mob/living/carbon/human/H)

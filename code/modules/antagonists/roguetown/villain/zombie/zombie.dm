@@ -273,7 +273,7 @@
 
 	zombie.update_body()
 	to_chat(zombie, span_narsiesmall("Hungry... so hungry... I CRAVE FLESH!"))
-	zombie.cmode_music = 'sound/music/combat_weird.ogg'
+	zombie.cmode_music = 'sound/music/cmode/combat.ogg'
 
 
 	// This is the original first commit values for it, aka 5-7

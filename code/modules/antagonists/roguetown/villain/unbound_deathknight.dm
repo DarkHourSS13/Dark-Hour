@@ -59,7 +59,7 @@
 		owner.become_unknown_to(MF)
 
 	var/mob/living/carbon/human/H = owner.current
-	H.cmode_music = 'sound/music/combat_old.ogg'
+	H.cmode_music = 'sound/music/cmode/combat.ogg'
 	H.faction = list("undead")
 	H.equipOutfit(/datum/outfit/job/roguetown/unbound_deathknight)
 

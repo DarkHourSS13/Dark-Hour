@@ -61,7 +61,7 @@ GLOBAL_LIST_EMPTY(vampire_objects)
 	owner.special_role = name
 	for(var/inherited_trait in inherent_traits)
 		ADD_TRAIT(owner.current, inherited_trait, "[type]")
-	owner.current.cmode_music = 'sound/music/cmode/antag/combat_thrall.ogg' // vampire lords get this too... For Now.
+	owner.current.cmode_music = 'sound/music/cmode/combat.ogg'
 	owner.current.AddSpell(new /obj/effect/proc_holder/spell/targeted/transfix)
 	owner.current.verbs |= /mob/living/carbon/human/proc/vamp_regenerate
 	owner.current.verbs |= /mob/living/carbon/human/proc/vampire_telepathy
