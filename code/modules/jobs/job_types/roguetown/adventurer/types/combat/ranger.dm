@@ -179,7 +179,7 @@
 			H.adjust_skillrank(/datum/skill/labor/butchering, 1, TRUE)
 			H.adjust_skillrank(/datum/skill/craft/cooking, 1, TRUE) // Won't really equate to much.
 			H.adjust_skillrank(/datum/skill/misc/tracking, 3, TRUE)
-			H.cmode_music = 'sound/music/cmode/combat.ogg
+			H.cmode_music = 'sound/music/cmode/combat.ogg'
 			ADD_TRAIT(H, TRAIT_OUTDOORSMAN, TRAIT_GENERIC)
 			var/weapons = list("Recurve Bow","Billhook","Sling","Crossbow")
 			var/weapon_choice = input("Choose your weapon.", "TAKE UP ARMS") as anything in weapons
