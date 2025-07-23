@@ -93,7 +93,7 @@
 			H.change_stat("constitution", 1)
 			H.change_stat("endurance", 1)
 			H?.mind.adjust_spellpoints(12)
-			H.cmode_music = 'sound/music/cmode/adventurer/combat_outlander3.ogg'
+			H.cmode_music = 'sound/music/cmode/combat.ogg'
 			ADD_TRAIT(H, TRAIT_MAGEARMOR, TRAIT_GENERIC)
 			ADD_TRAIT(H, TRAIT_ARCYNE_T2, TRAIT_GENERIC)
 			var/weapons = list("Bastard Sword", "Falchion & Wooden Shield", "Messer & Wooden Shield", "Foreign Straight Sword") // Much smaller selection with only three swords. You will probably want to upgrade.
