@@ -60,7 +60,7 @@
 			H.mind?.AddSpell(new /obj/effect/proc_holder/spell/targeted/touch/prestidigitation)
 			ADD_TRAIT(H, TRAIT_MAGEARMOR, TRAIT_GENERIC)
 			ADD_TRAIT(H, TRAIT_ARCYNE_T3, TRAIT_GENERIC)
-			H.cmode_music = 'sound/music/cmode/adventurer/combat_outlander4.ogg'
+			H.cmode_music = 'sound/music/cmode/combat.ogg'
 		if("Spellblade") // They get a unique spell of air slash
 			to_chat(H, span_warning("You are skilled in both the arcyne art and the art of the blade. But you are not a master of either nor could you channel your magick in armor."))
 			head = /obj/item/clothing/head/roguetown/bucklehat
