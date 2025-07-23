@@ -107,7 +107,7 @@
 	name = "Ordinator"
 	tutorial = "Adjudicators who - through valor and martiality - have proven themselves to be champions in all-but-name. Now, they have been personally chosen by the High Bishop of the Otavan Sovereignty for a mission-most-imperative: to hunt down and destroy the monsters threatening this fief. Ideal for those who prefer overt-and-chivalrous affairs."
 	outfit = /datum/outfit/job/roguetown/puritan/ordinator
-	cmode_music = 'sound/music/combat_inqordinator.ogg'
+	cmode_music = 'sound/music/cmode/combat.ogg'
 
 	category_tags = list(CTAG_PURITAN)
 
