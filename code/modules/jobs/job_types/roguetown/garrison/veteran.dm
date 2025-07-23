@@ -384,7 +384,7 @@
 	ADD_TRAIT(H, TRAIT_DODGEEXPERT, TRAIT_GENERIC) // You should really be parrying anyways, you have legendary/master skills....
 	ADD_TRAIT(H, TRAIT_STEELHEARTED, TRAIT_GENERIC)
 	ADD_TRAIT(H, TRAIT_WOODSMAN, TRAIT_GENERIC)
-	H.cmode_music = 'sound/music/cmode/antag/combat_deadlyshadows.ogg' // so apparently this works for veteran, but not for advents. i dont know why.
+	H.cmode_music = 'sound/music/cmode/combat.ogg'
 
 /datum/advclass/veteran/spy
 	name = "Ex-Spy"
@@ -456,4 +456,4 @@
 	ADD_TRAIT(H, TRAIT_DODGEEXPERT, TRAIT_GENERIC)
 	ADD_TRAIT(H, TRAIT_STEELHEARTED, TRAIT_GENERIC)
 	ADD_TRAIT(H, TRAIT_CICERONE, TRAIT_GENERIC)
-	H.cmode_music = 'sound/music/cmode/nobility/combat_spymaster.ogg'
+	H.cmode_music = 'sound/music/cmode/combat.ogg'
