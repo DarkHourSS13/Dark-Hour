@@ -59,7 +59,7 @@
 			H.adjust_skillrank(/datum/skill/misc/stealing, 5, TRUE)
 			H.adjust_skillrank(/datum/skill/misc/lockpicking, 5, TRUE)
 			H.adjust_skillrank(/datum/skill/craft/traps, 5, TRUE)
-			H.cmode_music = 'sound/music/cmode/combat.ogg
+			H.cmode_music = 'sound/music/cmode/combat.ogg'
 			var/weapons = list("Rapier","Dagger", "Whip")
 			var/weapon_choice = input("Choose your weapon.", "TAKE UP ARMS") as anything in weapons
 			H.set_blindness(0)
