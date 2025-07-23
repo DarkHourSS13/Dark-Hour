@@ -191,7 +191,7 @@
 		/obj/item/rogueweapon/scabbard/sheath = 1,
 		/obj/item/storage/belt/rogue/pouch/coins/mid = 1
 		)
-	H.cmode_music = 'sound/music/cmode/church/combat_reckoning.ogg' // this is probably awful implementation. too bad!
+	H.cmode_music = 'sound/music/cmode/combat.ogg'
 	switch(H.patron?.type)
 		if(/datum/patron/divine/astrata)
 			wrists = /obj/item/clothing/neck/roguetown/psicross/astrata
@@ -265,7 +265,7 @@
 	// -- Start of section for god specific bonuses --
 	if(H.patron?.type == /datum/patron/divine/astrata)
 		H.adjust_skillrank(/datum/skill/magic/holy, 1, TRUE)
-		H.cmode_music = 'sound/music/cmode/church/combat_astrata.ogg'
+		H.cmode_music = 'sound/music/cmode/combat.ogg'
 	if(H.patron?.type == /datum/patron/divine/dendor)
 		H.adjust_skillrank(/datum/skill/labor/farming, 1, TRUE)
 		H.adjust_skillrank(/datum/skill/misc/climbing, 1, TRUE)
@@ -280,7 +280,7 @@
 	if(H.patron?.type == /datum/patron/divine/necra)
 		ADD_TRAIT(H, TRAIT_NOSTINK, TRAIT_GENERIC)
 		ADD_TRAIT(H, TRAIT_SOUL_EXAMINE, TRAIT_GENERIC)
-		H.cmode_music = 'sound/music/cmode/church/combat_necra.ogg'
+		H.cmode_music = 'sound/music/cmode/combat.ogg'
 	if(H.patron?.type == /datum/patron/divine/pestra)
 		H.adjust_skillrank(/datum/skill/misc/medicine, 1, TRUE)
 		H.adjust_skillrank(/datum/skill/craft/alchemy, 1, TRUE)
@@ -288,7 +288,7 @@
 	if(H.patron?.type == /datum/patron/divine/eora)
 		ADD_TRAIT(H, TRAIT_BEAUTIFUL, TRAIT_GENERIC)
 		ADD_TRAIT(H, TRAIT_EMPATH, TRAIT_GENERIC)
-		H.cmode_music = 'sound/music/cmode/church/combat_eora.ogg'
+		H.cmode_music = 'sound/music/cmode/combat.ogg'
 	if(H.patron?.type == /datum/patron/divine/malum)
 		H.adjust_skillrank(/datum/skill/craft/blacksmithing, 1, TRUE)
 		H.adjust_skillrank(/datum/skill/craft/armorsmithing, 1, TRUE)

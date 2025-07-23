@@ -97,7 +97,7 @@
 	ADD_TRAIT(H, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
 	ADD_TRAIT(H, TRAIT_MEDIUMARMOR, TRAIT_GENERIC)
 	ADD_TRAIT(H, TRAIT_STEELHEARTED, TRAIT_GENERIC)
-	H.cmode_music = 'sound/music/cmode/towner/combat_retired.ogg'
+	H.cmode_music = 'sound/music/cmode/combat.ogg'
 
 /datum/advclass/veteran/footman
 	name = "Retired Footman"
