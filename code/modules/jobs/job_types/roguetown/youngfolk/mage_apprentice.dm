@@ -82,8 +82,6 @@
 	H.change_stat("intelligence", 3)
 	H.change_stat("perception", 2)
 	H.change_stat("speed", 1)
-	switch(H.patron?.type)
-		if(/datum/patron/inhumen/zizo)
 
 /datum/advclass/wapprentice/alchemist
 	name = "Alchemist Associate"
@@ -127,8 +125,6 @@
 	H.change_stat("perception", 3)
 	H.change_stat("endurance", 1)
 	ADD_TRAIT(H, TRAIT_SEEDKNOW, TRAIT_GENERIC)
-	switch(H.patron?.type)
-		if(/datum/patron/inhumen/zizo)
 
 /datum/advclass/wapprentice/apprentice
 	name = "Magician's Apprentice"
