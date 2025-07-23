@@ -18,7 +18,7 @@
 	max_pq = null
 	round_contrib_points = 2
 
-	cmode_music = 'sound/music/combat_veteran.ogg'
+	cmode_music = 'sound/music/cmode/combat.ogg'
 
 /datum/outfit/job/roguetown/captain
 	job_bitflag = BITFLAG_ROYALTY | BITFLAG_GARRISON	//Not a noble per-say but not really garrison either. So both, you are a courtier of sorts afterall + combat
