@@ -14,7 +14,7 @@
 	a_intent = INTENT_HELP
 	possible_mmb_intents = list(INTENT_STEAL, INTENT_JUMP, INTENT_KICK, INTENT_BITE)
 	possible_rmb_intents = list(/datum/rmb_intent/feint, /datum/rmb_intent/aimed, /datum/rmb_intent/weak)
-	cmode_music = 'sound/music/combat_weird.ogg'
+	cmode_music = 'sound/music/cmode/combat.ogg'
 
 /mob/living/carbon/human/species/skeleton/npc
 	aggressive = 1
