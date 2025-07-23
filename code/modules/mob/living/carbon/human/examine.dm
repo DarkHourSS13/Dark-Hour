@@ -198,7 +198,7 @@
 				if (THEY_THEM, THEY_THEM_F, IT_ITS)
 					. += span_redtext("[m1] repulsive!")
 	
-	if (HAS_TRAIT(src, TRAIT_CRITICAL_WEAKNESS))
+	if (HAS_TRAIT(src, TRAIT_CRITICAL_WEAKNESS) && (!HAS_TRAIT(src, TRAIT_VAMP_DREAMS)))
 		if(isliving(user))
 			var/mob/living/L = user
 			if(L.STAINT > 9 && L.STAPER > 9)
@@ -890,6 +890,11 @@
 			if(VD) 
 				if(!VD.disguised)
 					villain_text += span_userdanger("A MONSTER!")
+		if(mind.special_role == "Vampire Spawn")
+			var/datum/antagonist/vampirelord/lesser/VD = mind.has_antag_datum(/datum/antagonist/vampirelord/lesser)
+			if(VD) 
+				if(!VD.disguised)
+					villain_text += span_userdanger("A LICKER!")
 		if(mind.assigned_role == "Lunatic")
 			villain_text += span_userdanger("LUNATIC!")
 
@@ -898,14 +903,14 @@
 /proc/get_blade_dulling_text(obj/item/rogueweapon/I, verbose = FALSE)
 	switch(I.blade_dulling)
 		if(DULLING_SHAFT_WOOD)
-			return "[verbose ? "Wooden shaft" : "(W. shaft)"]"
+			return "[verbose ? "Wooden" : "(W. shaft)"]"
 		if(DULLING_SHAFT_REINFORCED)
-			return "[verbose ? "Reinforced shaft" : "(R. shaft)"]"
+			return "[verbose ? "Reinforced" : "(R. shaft)"]"
 		if(DULLING_SHAFT_METAL)
-			return "[verbose ? "Metal shaft" : "(M. shaft)"]"
+			return "[verbose ? "Metal" : "(M. shaft)"]"
 		if(DULLING_SHAFT_GRAND)
-			return "[verbose ? "Grand shaft" : "(G. shaft)"]"
+			return "[verbose ? "Grand" : "(G. shaft)"]"
 		if(DULLING_SHAFT_CONJURED)
-			return "[verbose ? "Conjured shaft" : "(C. shaft)"]"
+			return "[verbose ? "Conjured" : "(C. shaft)"]"
 		else
 			return null
